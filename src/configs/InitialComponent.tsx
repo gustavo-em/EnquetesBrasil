@@ -10,6 +10,7 @@ import {colors} from './layout';
 import {Text} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import styled from 'styled-components/native';
+import {LoginContextContainer} from './hooks/useLogin';
 
 const ButtonTab = styled.View`
   flex: 1;
@@ -130,7 +131,9 @@ const NavigationConfigs = ({children}: any) => {
 const TabNavigation = () => {
   return (
     <NavigationConfigs>
-      <TabConfigs />
+      <LoginContextContainer>
+        <TabConfigs />
+      </LoginContextContainer>
     </NavigationConfigs>
   );
 };
