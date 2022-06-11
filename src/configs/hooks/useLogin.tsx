@@ -5,8 +5,14 @@ import {Cadastro} from '../../screens/login/Cadastro';
 const LoginContext = createContext(null);
 
 type ILoginContext = {
-  login: any;
+  login?: ILogin;
   setLogin: Function;
+};
+
+type ILogin = {
+  email: string;
+  nome: string;
+  senha: string;
 };
 const Stack = createNativeStackNavigator();
 
