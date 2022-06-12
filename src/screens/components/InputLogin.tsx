@@ -9,7 +9,7 @@ const InputTextLogin = styled.TextInput`
   height: 60px;
   font-size: 18px;
 
-  border: 3px solid ${colorsOfProject.primary200};
+  border: 2px solid ${colorsOfProject.primary200};
   border-radius: 15px;
 
   width: 80%;
