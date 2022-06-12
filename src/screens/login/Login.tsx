@@ -63,22 +63,24 @@ export const Login = () => {
   const [senha, setSenha] = useState('');
 
   async function onAuthStateChanged(user: any) {
-    console.log('user', user);
+    console.log('changed');
     if (user != null) {
       const userStorage = await getData();
-      if (userStorage != null) {
-        const userFirestore = await firestore()
+      if (userStorage != null && userStorage.uid != undefined) {
+        firestore()
           .collection('users')
           .doc(userStorage.uid)
-          .get();
-        const dataUserFirestore = userFirestore.data() as IUser;
-        console.log('datauserfirestore', dataUserFirestore);
-        if (dataUserFirestore.email === userStorage.email) {
-          return setLogin(userStorage);
-        } else {
-          Alert.alert('Imcompatibilidade com storage e firestore');
-        }
+          .get()
+          .then(documentSnapshot => {
+            console.log('User exists: ', documentSnapshot.exists);
+
+            if (documentSnapshot.exists) {
+              console.log('User data: ', documentSnapshot.data());
+              setLogin(documentSnapshot.data());
+            }
+          });
       } else {
+        console.log('else');
         setLogin(user);
       }
     } else {
@@ -96,6 +98,7 @@ export const Login = () => {
     auth()
       .signInWithEmailAndPassword(email, senha)
       .then(async res => {
+        console.log('changedAUTH');
         const userFirestore = await firestore()
           .collection('users')
           .doc(res.user.uid)
@@ -107,9 +110,10 @@ export const Login = () => {
           email: res.user.email as string,
           senha,
           uid: res.user.uid as string,
+          ids_polls_voted: userFirestoreData.ids_polls_voted,
         };
         // Add to storage to auto-login
-        await storeData(user).then(r => console.log('gravou storage', r));
+        await storeData(user).then(r => console.log('gravou storage'));
         setLogin(user);
       })
       .catch(error => {
@@ -125,6 +129,7 @@ export const Login = () => {
   }
   React.useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+
     return subscriber; // unsubscribe on unmount
   }, []);
 
@@ -144,8 +149,8 @@ export const Login = () => {
           />
           <ContainerIMG>
             <IMG
-              start={{x: 0.5, y: 1}}
-              end={{x: 1, y: 0}}
+              start={{x: 1, y: 0}}
+              end={{x: 0.5, y: 0.5}}
               colors={[colorsOfProject.primary, 'transparent']}></IMG>
           </ContainerIMG>
           <WrapperSvg>

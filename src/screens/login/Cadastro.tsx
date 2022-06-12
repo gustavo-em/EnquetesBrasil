@@ -49,7 +49,6 @@ export const Cadastro = () => {
   const [nome, setNome] = useState('');
 
   async function onAuthStateChanged(user: any) {
-    console.log('user', user);
     if (user != null) {
       console.log('vai pegar get data');
       const userStorage = await getData(KEY_USER);
@@ -77,6 +76,7 @@ export const Cadastro = () => {
           email: res.user.email as string,
           senha,
           uid: res.user.uid as string,
+          ids_polls_voted: [],
         };
         // Add user account information in Firestore to be retrieved later.
         await firestore().collection('users').doc(res.user.uid).set(user);
@@ -115,8 +115,8 @@ export const Cadastro = () => {
           />
           <ContainerIMG>
             <IMG
-              start={{x: 0.5, y: 1}}
-              end={{x: 1, y: 0}}
+              start={{x: 1, y: 0}}
+              end={{x: 0.5, y: 0.5}}
               colors={[colorsOfProject.primary, 'transparent']}></IMG>
           </ContainerIMG>
           <WrapperSvg>

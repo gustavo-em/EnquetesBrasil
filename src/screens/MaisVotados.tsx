@@ -1,54 +1,98 @@
 import React from 'react';
-import {Dimensions, Text, View} from 'react-native';
-import {PieChart} from 'react-native-svg-charts';
+import {FlatList, Text} from 'react-native';
+import styled from 'styled-components/native';
+import {useLogin} from '../configs/hooks/useLogin';
+import {colors, colorsOfProject} from '../configs/layout';
+const Wrapper = styled.View`
+  flex: 1;
+  padding: 20px;
+`;
 
+const Title = styled.Text`
+  font-size: 36px;
+  color: ${colorsOfProject.secundary};
+  font-family: 'Roboto-Bold';
+`;
+
+const WrapperCard = styled.View`
+  width: 100%;
+  height: auto;
+  background-color: ${colorsOfProject.secundary};
+  border-radius: 10px;
+  padding: 10px;
+`;
+
+const Card = styled.View`
+  width: auto;
+  height: auto;
+  background-color: ${props =>
+    props.backgroundResp ? props.backgroundResp : colorsOfProject.secundary};
+  border-radius: 15px;
+  padding: 5px;
+`;
+
+const TitleCard = styled.Text`
+  font-size: 24px;
+  color: ${colors.white100};
+  font-family: 'Roboto-Bold';
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+`;
+const TitleQuestion = styled.Text`
+  font-size: 20px;
+  color: ${colors.white100};
+  font-family: 'Roboto-Regular';
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  padding: 5px;
+`;
+
+const WrapperImage = styled.ImageBackground`
+  flex: 1;
+  justify-content: space-between;
+  align-self: stretch;
+  border-radius: 15px;
+  overflow: hidden;
+  align-items: baseline;
+  padding: 10px;
+`;
 export const MaisVotados = () => {
-  const [selectedSlice, setSelectedSlice] = React.useState({
-    label: '',
-    value: 0,
-  });
-  const [labelWidth, setLavelWidth] = React.useState(0);
-
-  const {label, value} = selectedSlice;
-  const keys = ['google', 'facebook', 'linkedin', 'youtube', 'Twitter'];
-  const values = [15, 25, 35, 45, 55];
-  const colors = ['#600080', '#9900cc', '#c61aff', '#d966ff', '#ecb3ff'];
-  const data = keys.map((key, index) => {
-    return {
-      key,
-      value: values[index],
-      svg: {fill: colors[index]},
-      arc: {
-        outerRadius: 70 + values[index] + '%',
-        padAngle: label === key ? 0.1 : 0,
-      },
-      onPress: () => setSelectedSlice({label: key, value: values[index]}),
-    };
-  });
-  const deviceWidth = Dimensions.get('window').width;
+  const {login, setLogin} = useLogin();
+  console.log(login);
   return (
-    <View style={{justifyContent: 'center', flex: 1}}>
-      <PieChart
-        style={{height: 200}}
-        outerRadius={'80%'}
-        innerRadius={'45%'}
-        data={data}
-      />
-      <Text
-        onLayout={({
-          nativeEvent: {
-            layout: {width},
-          },
-        }) => {
-          setLavelWidth(width);
-        }}
-        style={{
-          position: 'absolute',
-          left: deviceWidth / 2 - labelWidth / 2,
-          textAlign: 'center',
-        }}>
-        {`${label} \n ${value}`}
-      </Text>
-    </View>
+    <>
+      <Wrapper>
+        <Title>Enquetes já votadas por {login.nome}</Title>
+        {login?.ids_polls_voted.length == 0 ? (
+          <Text>Ainda não votou</Text>
+        ) : (
+          <WrapperCard>
+            <FlatList
+              data={login?.ids_polls_voted}
+              renderItem={({item}) => {
+                const opt = JSON.parse(item.option);
+                const question = JSON.parse(item.question);
+                return (
+                  <Card key={item.id_poll} backgroundResp={opt.cor}>
+                    <TitleQuestion>{question.question}</TitleQuestion>
+                    <WrapperImage
+                      source={{uri: question.imgURL}}
+                      style={{
+                        height: 'auto',
+                      }}>
+                      <TitleCard>
+                        Resposta:{' '}
+                        <Text style={{color: opt.cor}}>{opt.label}</Text>
+                      </TitleCard>
+                      <TitleCard>{opt.votos} Votos até agora</TitleCard>
+                    </WrapperImage>
+                  </Card>
+                );
+              }}
+            />
+          </WrapperCard>
+        )}
+      </Wrapper>
+    </>
   );
 };

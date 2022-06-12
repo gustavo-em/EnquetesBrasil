@@ -13,6 +13,8 @@ type ILogin = {
   email: string;
   nome: string;
   senha: string;
+  uid: string;
+  ids_polls_voted: object[];
 };
 const Stack = createNativeStackNavigator();
 

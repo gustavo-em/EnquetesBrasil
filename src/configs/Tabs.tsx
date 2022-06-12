@@ -3,20 +3,17 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {colors, colorsOfProject} from './layout';
 import styled from 'styled-components/native';
-import {Categorias} from '../screens/Categorias';
 import {Lista} from '../screens/Lista';
 import {MaisVotados} from '../screens/MaisVotados';
-import {Criar} from '../screens/Criar';
+
 import {Perfil} from '../screens/Perfil';
-import {Poll} from '../screens/Poll';
-import {View} from 'react-native';
 
 const ButtonTab = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
   background-color: ${props =>
-    props.focused ? colors.white100 : 'transparent'};
+    props.focused ? colorsOfProject.secundary : 'transparent'};
   padding: 10px;
   padding-left: 30px;
   padding-right: 30px;
@@ -31,14 +28,15 @@ const ButtonTabPrincipal = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
-  background-color: ${colors.white100};
+  background-color: ${colorsOfProject.secundary};
   border-radius: 50px;
 
   width: 95px;
   height: 95px;
   position: absolute;
   top: -30px;
-  border: 3px solid ${colorsOfProject.primary};
+  border: ${props => (props.focused ? '7px' : '3px')} solid
+    ${colorsOfProject.primary};
 `;
 
 const Tab = createBottomTabNavigator();
@@ -52,13 +50,14 @@ export const TabConfigs = () => {
         headerShown: false,
         tabBarStyle: {
           position: 'absolute',
-          bottom: 25,
+          bottom: 5,
           left: 5,
           right: 5,
           elevation: 0,
-          backgroundColor: colorsOfProject.secundary,
+          backgroundColor: 'transparent',
           borderRadius: 15,
           height: 90,
+          borderColor: 'transparent',
         },
       }}>
       <Tab.Screen
@@ -81,7 +80,7 @@ export const TabConfigs = () => {
         component={Lista}
         options={{
           tabBarIcon: ({focused}) => (
-            <ButtonTabPrincipal>
+            <ButtonTabPrincipal focused={focused}>
               <FontAwesome5
                 name={'list'}
                 size={30}

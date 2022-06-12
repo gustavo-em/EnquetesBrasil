@@ -6,13 +6,14 @@ export type IUser = {
   email?: string;
   senha?: string;
   uid?: string;
+  ids_polls_voted?: Object[];
 };
 
 export const KEY_USER = 'user';
 export const storeData = async (value: IUser) => {
   try {
     const jsonValue = JSON.stringify(value);
-    console.log('jsonstringy', jsonValue);
+
     return await AsyncStorage.setItem('user', jsonValue);
   } catch (e) {
     Alert.alert('Erro ao criar Storage');
@@ -22,7 +23,7 @@ export const storeData = async (value: IUser) => {
 export const getData = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem('user');
-    console.log('jsonstrongify', jsonValue);
+
     return jsonValue != null ? (JSON.parse(jsonValue) as IUser) : null;
   } catch (e) {
     Alert.alert('Erro no storage');
