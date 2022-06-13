@@ -83,8 +83,8 @@ export const Login = () => {
             }
           });
       } else {
-        console.log('else');
-        setLogin(user);
+        console.log('else', user);
+        setLogin({...user, ids_polls_voted: []});
       }
     } else {
       setLogin(user);

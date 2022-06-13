@@ -63,7 +63,13 @@ export const MaisVotados = () => {
     <>
       <Wrapper>
         <Title>Enquetes já votadas por {login.nome}</Title>
-        {login?.ids_polls_voted.length == 0 ? (
+        {Object.keys(login).length === 0 ||
+        login?.ids_polls_voted != undefined ||
+        !login ||
+        typeof login.ids_polls_voted.length != undefined ||
+        !login.ids_polls_voted.length ||
+        login.ids_polls_voted.length == 0 ||
+        login.ids_polls_voted.length == undefined ? (
           <Text style={{fontSize: 20, color: colors.black100}}>
             Ainda não votou
           </Text>
