@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   Alert,
+  KeyboardAvoidingView,
 } from 'react-native';
 import styled from 'styled-components/native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -17,6 +18,8 @@ import {ButtonLogin} from '../components/ButtonLogin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import {getData, KEY_USER, storeData} from '../../configs/AsyncStorage';
+import {NativeStackHeaderProps} from '@react-navigation/native-stack';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const Container = styled.View`
   flex: 1;
@@ -109,44 +112,56 @@ export const Cadastro = () => {
     return (
       <>
         <Container>
-          <ImageBackground
-            source={require('../../assets/bg.jpg')}
-            style={{width: 400, height: 1000, position: 'absolute'}}
-          />
-          <ContainerIMG>
-            <IMG
-              start={{x: 1, y: 0}}
-              end={{x: 0.5, y: 0.5}}
-              colors={[colorsOfProject.primary, 'transparent']}></IMG>
-          </ContainerIMG>
-          <WrapperSvg>
-            <Desenho width={200} height={200} />
-          </WrapperSvg>
-          <InputLogin
-            placeholder="Nome"
-            icon="smile"
-            value={nome}
-            onChangeText={text => setNome(text)}
-          />
-          <InputLogin
-            placeholder="Email"
-            icon="user"
-            value={email}
-            onChangeText={text => setEmail(text)}
-          />
-          <InputLogin
-            placeholder="Senha"
-            icon="lock"
-            value={senha}
-            onChangeText={text => setSenha(text)}
-          />
+          <ScrollView
+            contentContainerStyle={{minHeight: 800}}
+            automaticallyAdjustKeyboardInsets
+            automaticallyAdjustContentInsets>
+            <KeyboardAvoidingView behavior="padding">
+              <ImageBackground
+                source={require('../../assets/bg.jpg')}
+                style={{width: 400, height: 1000, position: 'absolute'}}
+              />
+              <ContainerIMG>
+                <IMG
+                  start={{x: 1, y: 0}}
+                  end={{x: 0.5, y: 0.5}}
+                  colors={[colorsOfProject.primary, 'transparent']}></IMG>
+              </ContainerIMG>
 
-          <ButtonLogin
-            onPress={SignIn}
-            icon={'arrow-right'}
-            colorIcon={colorsOfProject.primary}>
-            Cadastrar
-          </ButtonLogin>
+              <WrapperSvg>
+                <Desenho width={200} height={200} />
+              </WrapperSvg>
+
+              <InputLogin
+                placeholder="Nome"
+                icon="smile"
+                value={nome}
+                onChangeText={text => setNome(text)}
+                type={'default'}
+              />
+              <InputLogin
+                placeholder="Email"
+                icon="user"
+                value={email}
+                onChangeText={text => setEmail(text)}
+                type={'email-address'}
+              />
+              <InputLogin
+                placeholder="Senha"
+                icon="lock"
+                value={senha}
+                onChangeText={text => setSenha(text)}
+                type={'visible-password'}
+              />
+
+              <ButtonLogin
+                onPress={SignIn}
+                icon={'arrow-right'}
+                colorIcon={colorsOfProject.primary}>
+                Cadastrar
+              </ButtonLogin>
+            </KeyboardAvoidingView>
+          </ScrollView>
         </Container>
       </>
     );

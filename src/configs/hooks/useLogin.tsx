@@ -2,6 +2,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {createContext, useContext, useState} from 'react';
 import {Login} from '../../screens/login/Login';
 import {Cadastro} from '../../screens/login/Cadastro';
+import {KeyboardAvoidingView} from 'react-native';
 const LoginContext = createContext(null);
 
 type ILoginContext = {

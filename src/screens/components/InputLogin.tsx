@@ -23,7 +23,7 @@ const Wrapper = styled.View`
   width: 100%;
   justify-content: center;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 `;
 
 const WrapperIcon = styled.View`
@@ -33,7 +33,13 @@ const WrapperIcon = styled.View`
   padding: 5px;
 `;
 
-export const InputLogin = ({icon, placeholder, onChangeText, value}: any) => {
+export const InputLogin = ({
+  icon,
+  placeholder,
+  onChangeText,
+  value,
+  type,
+}: any) => {
   return (
     <Wrapper>
       <WrapperIcon>
@@ -44,7 +50,9 @@ export const InputLogin = ({icon, placeholder, onChangeText, value}: any) => {
         />
       </WrapperIcon>
       <InputTextLogin
+        keyboardType={type}
         placeholder={placeholder}
+        placeholderTextColor="#000"
         onChangeText={onChangeText}
         value={value}></InputTextLogin>
     </Wrapper>

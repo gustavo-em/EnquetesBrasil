@@ -64,7 +64,9 @@ export const MaisVotados = () => {
       <Wrapper>
         <Title>Enquetes já votadas por {login.nome}</Title>
         {login?.ids_polls_voted.length == 0 ? (
-          <Text>Ainda não votou</Text>
+          <Text style={{fontSize: 20, color: colors.black100}}>
+            Ainda não votou
+          </Text>
         ) : (
           <WrapperCard>
             <FlatList

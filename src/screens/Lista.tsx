@@ -182,9 +182,11 @@ export const Lista = ({navigation}: any) => {
 
   async function voteInOption() {
     console.log('votu', optionSelected);
+
     if (optionSelected == false) {
       toggleModal();
       setTextModal('Selecione uma opção para conseguir votar');
+      return;
     }
 
     const newResponses = choosing.responses.map((value, index, array) => {
@@ -222,7 +224,14 @@ export const Lista = ({navigation}: any) => {
         responses: newResponses,
         users_voted: [...choosing.users_voted, login?.nome],
       })
-      .then(() => console.log('Poll updated'));
+      .then(() => {
+        //navigation.navigate('+');
+        modalizeRef.current?.close();
+        toggleModal();
+        setTextModal(
+          'Obrigado por votar! \nVocê pode acompanhar a enquete na aba ao lado.',
+        );
+      });
   }
 
   React.useEffect(() => {
@@ -267,7 +276,7 @@ export const Lista = ({navigation}: any) => {
         swipeDirection="left">
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <ViewModal>
-            <Text style={{fontSize: 24}}>{textModal}</Text>
+            <Text style={{fontSize: 24, color: '#000'}}>{textModal}</Text>
 
             <ButtonModal onPress={toggleModal}>
               <TextModal>OK</TextModal>

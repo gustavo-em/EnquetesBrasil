@@ -73,7 +73,7 @@ export const Perfil = () => {
       <Wrapper>
         <WrapperHeader>
           <Title>Perfil</Title>
-          <ButtonLeave>
+          <ButtonLeave onPress={logout}>
             <FontAwesome5
               name={'sign-out-alt'}
               color={colorsOfProject.primary}
