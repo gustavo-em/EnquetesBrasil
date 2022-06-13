@@ -214,23 +214,23 @@ export const Lista = ({navigation}: any) => {
           },
         ],
       })
-      .then(() => console.log('User updated'));
-
-    //Att poll
-    firestore()
-      .collection('polls')
-      .doc(choosing.id as string)
-      .update({
-        responses: newResponses,
-        users_voted: [...choosing.users_voted, login?.nome],
-      })
       .then(() => {
-        //navigation.navigate('+');
-        modalizeRef.current?.close();
-        toggleModal();
-        setTextModal(
-          'Obrigado por votar! \nVocê pode acompanhar a enquete na aba ao lado.',
-        );
+        //Att poll
+        firestore()
+          .collection('polls')
+          .doc(choosing.id as string)
+          .update({
+            responses: newResponses,
+            users_voted: [...choosing.users_voted, login?.nome],
+          })
+          .then(() => {
+            //navigation.navigate('+');
+            modalizeRef.current?.close();
+            toggleModal();
+            setTextModal(
+              'Obrigado por votar! \nVocê pode acompanhar a enquete na aba ao lado.',
+            );
+          });
       });
   }
 

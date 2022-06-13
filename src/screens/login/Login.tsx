@@ -16,7 +16,7 @@ import {useLogin} from '../../configs/hooks/useLogin';
 import Desenho from '../../assets/LogoSplash.svg';
 import {InputLogin} from '../components/InputLogin';
 import {ButtonLogin} from '../components/ButtonLogin';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 import {getData, IUser, storeData, type} from '../../configs/AsyncStorage';
 import firestore from '@react-native-firebase/firestore';
@@ -59,45 +59,17 @@ const TextCadastro = styled.Text`
 
 export const Login = () => {
   const navigate = useNavigation();
-  const [initializing, setInitializing] = useState(true);
   const {login, setLogin} = useLogin();
 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-
-  async function onAuthStateChanged(user: any) {
-    console.log('changed');
-    if (user != null) {
-      const userStorage = await getData();
-      if (userStorage != null && userStorage.uid != undefined) {
-        firestore()
-          .collection('users')
-          .doc(userStorage.uid)
-          .get()
-          .then(documentSnapshot => {
-            console.log('User exists: ', documentSnapshot.exists);
-
-            if (documentSnapshot.exists) {
-              console.log('User data: ', documentSnapshot.data());
-              setLogin(documentSnapshot.data());
-            }
-          });
-      } else {
-        console.log('else', user);
-        setLogin({...user, ids_polls_voted: []});
-      }
-    } else {
-      setLogin(user);
-    }
-
-    if (initializing) setInitializing(false);
-  }
 
   function SignIn() {
     if (email == '' && senha == '') {
       Alert.alert('Campo vazio');
       return;
     }
+
     auth()
       .signInWithEmailAndPassword(email, senha)
       .then(async res => {
@@ -106,18 +78,11 @@ export const Login = () => {
           .collection('users')
           .doc(res.user.uid)
           .get();
-
-        const userFirestoreData = userFirestore.data() as IUser;
-        const user = {
-          nome: userFirestoreData.nome,
-          email: res.user.email as string,
-          senha,
-          uid: res.user.uid as string,
-          ids_polls_voted: userFirestoreData.ids_polls_voted,
-        };
         // Add to storage to auto-login
-        await storeData(user).then(r => console.log('gravou storage'));
-        setLogin(user);
+        await storeData(userFirestore.data() as IUser).then(r =>
+          console.log('gravou storage'),
+        );
+        setLogin(userFirestore.data() as IUser);
       })
       .catch(error => {
         console.log(error);
@@ -131,13 +96,8 @@ export const Login = () => {
       });
   }
   React.useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-
-    return subscriber; // unsubscribe on unmount
+    return () => console.log('DESRENDER LOGIn');
   }, []);
-
-  if (initializing) return null;
-
   if (!login) {
     return (
       <>

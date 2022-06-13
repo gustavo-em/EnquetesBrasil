@@ -44,33 +44,20 @@ const WrapperSvg = styled.View`
 `;
 
 export const Cadastro = () => {
-  const [initializing, setInitializing] = useState(true);
+  //deixar botao carregando enquanto ta pegando usuario do storage
+  //const [initializing, setInitializing] = useState(true);
   const {login, setLogin} = useLogin();
 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [nome, setNome] = useState('');
 
-  async function onAuthStateChanged(user: any) {
-    if (user != null) {
-      console.log('vai pegar get data');
-      const userStorage = await getData(KEY_USER);
-      if (userStorage != null) {
-        return setLogin(userStorage);
-      } else {
-        setLogin(user);
-      }
-    } else {
-      setLogin(user);
-    }
-    if (initializing) setInitializing(false);
-  }
-
   function SignIn() {
     if (email == '' && senha == '' && nome == '') {
       Alert.alert('Campo vazio');
       return;
     }
+
     auth()
       .createUserWithEmailAndPassword(email, senha)
       .then(async res => {
@@ -81,12 +68,14 @@ export const Cadastro = () => {
           uid: res.user.uid as string,
           ids_polls_voted: [],
         };
+
+        console.log('user auth cadastro:', user);
+
+        // Add to storage to auto-login
+        await storeData(user);
         // Add user account information in Firestore to be retrieved later.
         await firestore().collection('users').doc(res.user.uid).set(user);
-        // Add to storage to auto-login
-        await storeData(user).then(r => console.log('gravou storage', r));
-
-        //setLogin(user)
+        console.log('atualizou firestore cadastro');
       })
       .catch(error => {
         console.log(error);
@@ -101,12 +90,6 @@ export const Cadastro = () => {
         }
       });
   }
-  React.useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, []);
-
-  if (initializing) return null;
 
   if (!login) {
     return (
@@ -165,5 +148,7 @@ export const Cadastro = () => {
         </Container>
       </>
     );
+  } else {
+    return null;
   }
 };
