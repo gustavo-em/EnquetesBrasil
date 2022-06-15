@@ -58,7 +58,6 @@ const ButtonLeave = styled.TouchableOpacity`
 `;
 export const Perfil = () => {
   const {login, setLogin} = useLogin();
-  console.log(login);
 
   function logout() {
     auth()

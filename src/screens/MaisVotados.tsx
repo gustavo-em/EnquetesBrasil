@@ -6,6 +6,9 @@ import {colors, colorsOfProject} from '../configs/layout';
 const Wrapper = styled.View`
   flex: 1;
   padding: 20px;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 `;
 
 const Title = styled.Text`
@@ -24,11 +27,13 @@ const WrapperCard = styled.View`
 
 const Card = styled.View`
   width: auto;
-  height: auto;
+  height: 200px;
   background-color: ${props =>
     props.backgroundResp ? props.backgroundResp : colorsOfProject.secundary};
   border-radius: 15px;
-  padding: 5px;
+  padding: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 `;
 
 const TitleCard = styled.Text`
@@ -58,7 +63,6 @@ const WrapperImage = styled.ImageBackground`
 `;
 export const MaisVotados = () => {
   const {login, setLogin} = useLogin();
-  console.log(login);
   return (
     <>
       <Wrapper>

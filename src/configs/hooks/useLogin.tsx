@@ -2,22 +2,25 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {createContext, useContext, useState} from 'react';
 import {Login} from '../../screens/login/Login';
 import {Cadastro} from '../../screens/login/Cadastro';
-import {KeyboardAvoidingView} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import {getData} from '../AsyncStorage';
 const LoginContext = createContext(null);
 
-type ILoginContext = {
-  login?: ILogin;
+export type ILoginContext = {
+  login: ILogin;
   setLogin: Function;
 };
-
-type ILogin = {
+export type IIds_polls_voted = {
+  id_poll: number;
+  option: String;
+  question: String;
+};
+export type ILogin = {
   email: string;
   nome: string;
   senha: string;
   uid: string;
-  ids_polls_voted: object[];
+  ids_polls_voted: IIds_polls_voted[];
 };
 const Stack = createNativeStackNavigator();
 
@@ -37,16 +40,15 @@ export const LoginContextContainer = ({children}: any) => {
   const [login, setLogin] = useState(false);
 
   async function onResult(QuerySnapshot: any) {
-    console.log('atualizou users');
     const userStorage = await getData();
     var logado = false;
     QuerySnapshot.forEach(
       (documentSnapshot: {id: string | undefined; data: () => any}) => {
         if (documentSnapshot.id === userStorage?.uid) {
           logado = true;
-          console.log('setandologin');
+
           setLogin(documentSnapshot.data());
-          return console.log('user firestore login', documentSnapshot.data());
+          return;
         }
       },
     );
@@ -64,8 +66,7 @@ export const LoginContextContainer = ({children}: any) => {
       .collection('users')
       .onSnapshot(onResult, onError);
     return () => {
-      //subscriber();
-      console.log('return effect USElogin');
+      subscriber();
     };
   }, []);
   return (

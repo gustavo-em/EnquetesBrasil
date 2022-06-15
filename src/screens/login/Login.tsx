@@ -73,15 +73,12 @@ export const Login = () => {
     auth()
       .signInWithEmailAndPassword(email, senha)
       .then(async res => {
-        console.log('changedAUTH');
         const userFirestore = await firestore()
           .collection('users')
           .doc(res.user.uid)
           .get();
         // Add to storage to auto-login
-        await storeData(userFirestore.data() as IUser).then(r =>
-          console.log('gravou storage'),
-        );
+        await storeData(userFirestore.data() as IUser);
         setLogin(userFirestore.data() as IUser);
       })
       .catch(error => {
@@ -95,9 +92,7 @@ export const Login = () => {
         }
       });
   }
-  React.useEffect(() => {
-    return () => console.log('DESRENDER LOGIn');
-  }, []);
+
   if (!login) {
     return (
       <>

@@ -69,13 +69,10 @@ export const Cadastro = () => {
           ids_polls_voted: [],
         };
 
-        console.log('user auth cadastro:', user);
-
         // Add to storage to auto-login
         await storeData(user);
         // Add user account information in Firestore to be retrieved later.
         await firestore().collection('users').doc(res.user.uid).set(user);
-        console.log('atualizou firestore cadastro');
       })
       .catch(error => {
         console.log(error);

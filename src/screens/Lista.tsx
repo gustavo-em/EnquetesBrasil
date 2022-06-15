@@ -13,16 +13,7 @@ import {ButtonLogin} from './components/ButtonLogin';
 import {Chart} from './components/Chart';
 import Modal from 'react-native-modal';
 import {useLogin} from '../configs/hooks/useLogin';
-type IPoll = {
-  id: string;
-  imgURL: string;
-  question: string;
-  category: string;
-  colorBackground: string;
-  colorBackgroundQuestion: string;
-  responses: String[];
-  users_voted: String[];
-};
+import {IPoll, usePolls} from '../configs/hooks/usePoll';
 
 const WrapperPoll = styled.View`
   flex: 1;
@@ -138,10 +129,10 @@ type IOption = {
 export const Lista = ({navigation}: any) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [textModal, setTextModal] = useState('');
-  const [pollsFirestore, setPollsFirestore] = useState<IPoll | []>([]);
   const [choosing, setChoosing] = useState<IPoll | false>(false);
   const [optionSelected, setOptionSelect] = useState<IOption | false>(false);
-  const {login, setLogin} = useLogin();
+  const {login} = useLogin();
+  const {pollsWithoutVoted, setPollsWithoutVoted} = usePolls();
 
   const modalizeRef = useRef<Modalize>(null);
   const toggleModal = () => setModalVisible(!isModalVisible);
@@ -157,7 +148,8 @@ export const Lista = ({navigation}: any) => {
   }
 
   async function getPolls() {
-    const pollsShow: [] = [];
+    const pollsShow: IPoll[] = [];
+    const pollsFB: IPoll[] = [];
     await firestore()
       .collection('polls')
       .get()
@@ -176,13 +168,11 @@ export const Lista = ({navigation}: any) => {
             });
           }
         });
-        setPollsFirestore(pollsShow);
+        setPollsWithoutVoted(pollsShow);
       });
   }
 
   async function voteInOption() {
-    console.log('votu', optionSelected);
-
     if (optionSelected == false) {
       toggleModal();
       setTextModal('Selecione uma opção para conseguir votar');
@@ -198,7 +188,6 @@ export const Lista = ({navigation}: any) => {
       }
       return value;
     });
-    console.log(login);
 
     //Add new poll voted para usuario
     firestore()
@@ -214,7 +203,7 @@ export const Lista = ({navigation}: any) => {
           },
         ],
       })
-      .then(() => {
+      .then(up => {
         //Att poll
         firestore()
           .collection('polls')
@@ -293,7 +282,7 @@ export const Lista = ({navigation}: any) => {
           alignSelf: 'stretch',
         }}
         numColumns={2}
-        data={pollsFirestore}
+        data={pollsWithoutVoted}
         renderItem={renderItem}
       />
 
@@ -306,7 +295,6 @@ export const Lista = ({navigation}: any) => {
           backgroundColor: colorsOfProject.secundary,
         }}
         onOpen={() => {
-          console.log('abriumodal');
           setOptionSelect(false);
         }}>
         <WrapperModal>
@@ -321,6 +309,7 @@ export const Lista = ({navigation}: any) => {
           {choosing.users_voted ? (
             <WrapperUsersVoted>
               {choosing.users_voted.map((user, index, array) => {
+                if (index >= 7) return false;
                 return (
                   <TextUsersVoted key={user}>
                     {user}
